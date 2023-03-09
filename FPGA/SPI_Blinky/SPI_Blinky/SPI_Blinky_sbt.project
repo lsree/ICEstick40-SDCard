@@ -4,7 +4,7 @@ Version=Lattice Semiconductor Corporation iCEcube - Release: 2020.12.27943 - Bui
 ProjectName=SPI_Blinky
 Vendor=SiliconBlue
 Synthesis=synplify
-ProjectVFiles=
+ProjectVFiles=../blinky.v=work
 ProjectCFiles=
 CurImplementation=SPI_Blinky_Implmnt
 Implementations=SPI_Blinky_Implmnt
@@ -12,17 +12,17 @@ StartFromSynthesis=yes
 IPGeneration=false
 
 [SPI_Blinky_Implmnt]
-DeviceFamily=iCE40UP
-Device=5K
-DevicePackage=UWG30
+DeviceFamily=iCE40
+Device=HX1K
+DevicePackage=TQ144
 DevicePower=
-NetlistFile=
+NetlistFile=SPI_Blinky_Implmnt/SPI_Blinky.edf
 AdditionalEDIFFile=
 IPEDIFFile=
-DesignLib=
-DesignView=
-DesignCell=
-SynthesisSDCFile=
+DesignLib=SPI_Blinky_Implmnt/sbt/netlist/oadb-blinky
+DesignView=_rt
+DesignCell=blinky
+SynthesisSDCFile=SPI_Blinky_Implmnt/SPI_Blinky.scf
 UserPinConstraintFile=
 UserSDCFile=
 PhysicalConstraintFile=
@@ -35,8 +35,8 @@ OperationRange=Commercial
 TypicalCustomTemperature=25
 WorstCustomTemperature=85
 BestCustomTemperature=0
-IOBankVoltages=topBank,3.3 bottomBank,3.3
-derValue=1.32445
+IOBankVoltages=topBank,3.3 bottomBank,3.3 leftBank,3.3 rightBank,3.3
+derValue=0.701346
 TimingPathNumberStick=0
 
 [lse options]
