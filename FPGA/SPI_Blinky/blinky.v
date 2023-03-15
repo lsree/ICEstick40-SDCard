@@ -7,32 +7,27 @@ module blinky (
         output LED5
     );
 
-    parameter half_sec_psc = 41'd256;
-    parameter one_sec_psc = 41'd512;
+    parameter half_sec_psc = 32'd6000000;
+    //parameter one_sec_psc = 41'd512;
 
-    reg [40:0] half_sec_cntr = 41'd0;
-    reg half_sec_pulse;
-    reg [40:0] one_sec_cntr = 41'd0;
-    reg one_sec_pulse;
+    reg [15:0] div_cntr1;
+    reg [6:0] div_cntr2;
+    reg half_sec_pulse = 0;
 
     always@(posedge clk) 
     begin
-        half_sec_cntr <= half_sec_cntr + 1;
-        if (half_sec_cntr == half_sec_psc)
-        begin
-            half_sec_pulse <= !half_sec_pulse;
-            half_sec_cntr <= 0;
-        end
+        div_cntr1 <= div_cntr1  + 1;
+        if (div_cntr1 == 0)
+            if (div_cntr2 == 91)
+            begin
+                half_sec_pulse <= ~half_sec_pulse;
+                div_cntr2  <= 0;
+            end
+            else
+                div_cntr2 <= div_cntr2 + 1;
+   end
 
-        one_sec_cntr <= one_sec_cntr + 1;
-        if (one_sec_cntr == one_sec_psc)
-        begin
-            one_sec_pulse <= !one_sec_pulse;
-            one_sec_cntr <= 0;
-        end
-    end
-
-    assign LED5 = one_sec_pulse;
+    assign LED5 = half_sec_pulse;
     assign {LED2, LED4} = {2{half_sec_pulse}};
     assign {LED1, LED3} = {2{!half_sec_pulse}};
 
