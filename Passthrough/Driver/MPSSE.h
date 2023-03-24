@@ -17,6 +17,8 @@
 #define SET_TCK_DIV 0x86
 #define CLK_DIV_5_OFF       0x8A
 #define CLK_DIV_5_ON        0x8B
+#define CLK_EN_3PHASE       0x8C
+#define CLK_DIS_3PHASE      0x8D
 #define CLK_CONT_IO_H       0x94    //Clk continuously and Wait On I/O High
 #define CLK_CONT_IO_L       0x95    //Clk continuously and Wait On I/O Low
 

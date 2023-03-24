@@ -48,6 +48,9 @@ char tx_arr[256] = {
 
 int SPI_init(struct ftdi_context * ftdic);
 int SPI_write(struct ftdi_context * ftdic, char * data, uint16_t len);
+int SPI_CSDisable(struct ftdi_context * ftdic);
+int SPI_CSEnable(struct ftdi_context * ftdic);
+
 
 int main(int argc, char * argv[])
 {
@@ -120,8 +123,8 @@ int main(int argc, char * argv[])
 int SPI_init(struct ftdi_context * ftdic)
 {
     int status = 0;
-    char config_cmds[6] = {CLK_DIV_5_OFF, ADAPTIVE_CLK_OFF, SET_OUTPUT_L_BYTE, 
-        SET_TCK_DIV, 0xFF, 0xFF};
+    char config_cmds[] = {CLK_DIV_5_OFF, ADAPTIVE_CLK_OFF, CLK_DIS_3PHASE, 
+        SET_TCK_DIV, 0x06, 0x00};
     status = ftdi_write_data(ftdic, config_cmds, sizeof(config_cmds));
     usleep(50); //Wait 50ms for init to complete
     return status;
@@ -130,6 +133,14 @@ int SPI_init(struct ftdi_context * ftdic)
 int SPI_write(struct ftdi_context * ftdic, char * data, uint16_t len)
 {
     int status = 0;
+
+    status = SPI_CSEnable(ftdic);
+    if (status < 0)
+    {
+        fprintf(stderr, "Unable to set CS\n%s\n", ftdi_get_error_string(ftdic));
+        return status;
+    }
+
     //TX OPCODE
     uint8_t tx[3] =  {MSB_FALLING_EDGE_CLK_BYTE_OUT, (uint8_t) len, (uint8_t) (len >> 8)};
     status = ftdi_write_data(ftdic, tx, sizeof(tx));
@@ -145,7 +156,36 @@ int SPI_write(struct ftdi_context * ftdic, char * data, uint16_t len)
     {
         fprintf(stderr, "Unable to send data during SPI write\n%s\n", ftdi_get_error_string(ftdic));
     }
-    return status;
- 
 
+    status = SPI_CSDisable(ftdic);
+    if (status < 0)
+    {
+        fprintf(stderr, "Unable to set CS\n%s\n", ftdi_get_error_string(ftdic));
+        return status;
+    }
+
+    return status;
+}
+
+int SPI_CSEnable(struct ftdi_context * ftdic)
+{
+    int status = 0;
+
+    //CS high, MOSI, SCL low / CS, MOSI, SCL set as outputs
+    char config_cmds[3] = {SET_OUTPUT_L_BYTE, 0x08, 0x0B};
+    status = ftdi_write_data(ftdic, config_cmds, sizeof(config_cmds));
+    return status;
+}
+
+int SPI_CSDisable(struct ftdi_context * ftdic)
+{
+    int status = 0;
+
+    //CS, MOSI, SCL low / CS, MOSI, SCL set as outputs
+    char config_cmds[3] = {SET_OUTPUT_L_BYTE, 0x00, 0x0B};
+    for (int i = 0; i < 5; i++)
+    {
+        status = ftdi_write_data(ftdic, config_cmds, sizeof(config_cmds));
+    }
+    return status;
 }
