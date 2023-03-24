@@ -45,6 +45,8 @@ char tx_arr[256] = {
     240,241,242,243,244,245,246,247,
     248,249,250,251,252,253,254,255};
 
+
+int SPI_init(struct ftdi_context * ftdic);
 int SPI_write(struct ftdi_context * ftdic, char * data, uint16_t len);
 
 int main(int argc, char * argv[])
@@ -93,17 +95,32 @@ int main(int argc, char * argv[])
         goto cleanup;
 	}
 
-    while (1)
+    if (SPI_init(ftdic) < 0)
+    {
+		fprintf(stderr, "Failed init SPI on iCE FTDI USB device.\n%s\n", 
+            ftdi_get_error_string(ftdic));
+ 
+    }
+
+    printf("SPI_INIT\n");
+    /* while (1)
     {
         SPI_write(ftdic, tx_arr, 256);
 
         sleep(1);
-    }
+    }*/
 
 
     cleanup:
         ftdi_free(ftdic);
     return 0;
+}
+
+
+int SPI_init(struct ftdi_context * ftdic)
+{
+    char config_cmds[5] = {CLK_DIV_5_OFF, SET_TCK_DIV, 0xFF, 0xFF, CLK_CONT_IO_H};
+    return ftdi_write_data(ftdic, config_cmds, sizeof(config_cmds));
 }
 
 int SPI_write(struct ftdi_context * ftdic, char * data, uint16_t len)

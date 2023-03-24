@@ -1,6 +1,7 @@
 CC=gcc
+CFLAGS= -g
 DEPENDENCIES = -lftdi
 
 
 all: 
-	$(CC) USB_SPI.c $(DEPENDENCIES) -o spi
+	$(CC) $(CFLAGS) USB_SPI.c $(DEPENDENCIES) -o spi
