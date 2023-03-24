@@ -103,12 +103,12 @@ int main(int argc, char * argv[])
     }
 
     printf("SPI_INIT\n");
-    /* while (1)
+    while (1)
     {
         SPI_write(ftdic, tx_arr, 256);
 
         sleep(1);
-    }*/
+    }
 
 
     cleanup:
@@ -119,8 +119,11 @@ int main(int argc, char * argv[])
 
 int SPI_init(struct ftdi_context * ftdic)
 {
-    char config_cmds[5] = {CLK_DIV_5_OFF, SET_TCK_DIV, 0xFF, 0xFF, CLK_CONT_IO_H};
-    return ftdi_write_data(ftdic, config_cmds, sizeof(config_cmds));
+    int status = 0;
+    char config_cmds[1] = {CLK_DIV_5_OFF};//, SET_TCK_DIV, 0xFF, 0xFF};
+    status = ftdi_write_data(ftdic, config_cmds, sizeof(config_cmds));
+    usleep(50); //Wait 50ms for init to complete
+    return status;
 }
 
 int SPI_write(struct ftdi_context * ftdic, char * data, uint16_t len)
