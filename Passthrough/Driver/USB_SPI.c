@@ -119,7 +119,8 @@ int main(int argc, char * argv[])
 
 int SPI_init(struct ftdi_context * ftdic)
 {
-    char config_cmds[5] = {CLK_DIV_5_OFF, SET_TCK_DIV, 0xFF, 0xFF, CLK_CONT_IO_H};
+    char config_cmds[6] = {CLK_DIV_5_OFF, ADAPTIVE_CLK_OFF, SET_OUTPUT_L_BYTE, 
+        SET_TCK_DIV, 0xFF, 0xFF};
     return ftdi_write_data(ftdic, config_cmds, sizeof(config_cmds));
 }
 
