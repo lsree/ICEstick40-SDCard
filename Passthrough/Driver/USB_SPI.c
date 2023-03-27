@@ -182,10 +182,12 @@ int SPI_CSDisable(struct ftdi_context * ftdic)
     int status = 0;
 
     //CS, MOSI, SCL low / CS, MOSI, SCL set as outputs
-    char config_cmds[3] = {SET_OUTPUT_L_BYTE, 0x00, 0x0B};
-    for (int i = 0; i < 5; i++)
-    {
-        status = ftdi_write_data(ftdic, config_cmds, sizeof(config_cmds));
-    }
+    //Sent 5 times because otherwise it doesn't hold the values
+    char config_cmds[] = {SET_OUTPUT_L_BYTE, 0x00, 0x0B,
+                            SET_OUTPUT_L_BYTE, 0x00, 0x0B,
+                            SET_OUTPUT_L_BYTE, 0x00, 0x0B,
+                            SET_OUTPUT_L_BYTE, 0x00, 0x0B,
+                            SET_OUTPUT_L_BYTE, 0x00, 0x0B};
+    status = ftdi_write_data(ftdic, config_cmds, sizeof(config_cmds));
     return status;
 }
