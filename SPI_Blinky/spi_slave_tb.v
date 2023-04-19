@@ -7,10 +7,14 @@ reg r_clk;
 reg r_sck;
 
 logic r_MOSI;
-
+logic cs;
+logic 
 
 initial begin
     r_clk = 0;
+    cs = 1;
+    r_MOSI = 0;
+    
 
 end
 
@@ -22,10 +26,11 @@ spi_slave slave1(
     //SPI Signals 
     .i_sck(r_sck), 
     .i_MOSI(r_MOSI),
-    .i_cs )
+    .i_cs(cs) )
 
 task sendSingleByte(input [7:0]data);
     begin
+        cs = 0;
         for (int i = 0; i < 8; i++)
         begin 
             #(SCK_DELAY)
@@ -33,9 +38,7 @@ task sendSingleByte(input [7:0]data);
             r_MOSI = data[i];
              
         end
-        
-
-
+       cs = 1; 
     end
 endtask
 
