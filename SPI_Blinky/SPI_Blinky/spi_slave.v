@@ -19,7 +19,7 @@ module spi_slave(
     reg [2:0] r_rx_cntr;                  //Counts # of bytes received
     reg r_sck_rx_rdy;                   //Notifies from SCK domain that 1 byte has been read
 
-    always @ (posedge sck or posedge i_cs) begin
+    always @ (posedge i_sck or posedge i_cs) begin
         if (i_cs) begin
             r_rx_byte <= 8'd0;
             r_rx_cntr <= 3'd0;
