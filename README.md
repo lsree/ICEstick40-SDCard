@@ -26,4 +26,7 @@ USB-SD Card interface using the Lattic ICEStick40 FPGA dev board.
 * At the kernel side / driver use the SCSI (Small Computer Systems Interface). There is a layer called SCSI Disk than could be used. 
 * It looks like programming it using MTD (Memory Technology Device) is a another option. 
 
-
+## SPI and Verilog
+* Using SCK vs sampling it https://electronics.stackexchange.com/questions/553981/spi-clock-signal-sclk-usage-in-fpga-spi-slave
+  * Maybe use PLL??? 
+* https://github.com/nandland/spi-slave  - Uses SCK domain 
