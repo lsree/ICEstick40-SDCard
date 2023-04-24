@@ -25,25 +25,23 @@ module spi_slave(
     reg [2:0] r_rx_cntr;                  //Counts # of bytes received
     reg r_sck_rx_rdy;                   //Notifies from SCK domain that 1 byte has been read
 
-    reg [1:0] r_rx_state,  r_rx_state_n;
-    parameter IDLE=0, READ=1, BYTE_FULL=2;
-
-    always @(*) begin
+/*    always @(*) begin
         case (r_rx_state)
             IDLE: begin
-                state_n = i_cs ? IDLE : READ;
-                cntr
+                t_rx_state_n = i_cs ? IDLE : READ;
             end
-
+            READ: r_rx_state_n = (r_rx_cntr < 8) ? READ : BYTE_FULL;
+            BYTE_FULL: r_rx_state_n = i_cs ? IDLE : READ;
         endcase
-
     end
+*/
+
     always @ (posedge i_sck or posedge i_cs) begin
         if (i_cs) begin
             r_rx_byte <= 8'd0;
             r_rx_cntr <= 3'd0;
             r_sck_rx_rdy <= 0;
-            r_rx_sck_full_byte <= 0;
+            //r_rx_sck_full_byte <= 0;
         end
         else begin 
             r_rx_cntr <= r_rx_cntr + 3'd1;
@@ -52,7 +50,9 @@ module spi_slave(
                 r_sck_rx_rdy <= 1'b1;
                 r_rx_sck_full_byte <= r_rx_byte;  //Store completed byte
             end
-            else if (r_rx_cntr == 3'b010)     //r_sck_rx_rdy will be asserted for 2x sck cycles. Hopefully this is enough
+        //r_sck_rx_rdy will be asserted for 2x sck cycles. Hopefully this is enough
+        // Or it will be asserted after CS goes high
+            else if (r_rx_cntr == 3'b010)     
                 r_sck_rx_rdy <= 1'b0;
         end
     end 
